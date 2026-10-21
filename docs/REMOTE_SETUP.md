@@ -65,6 +65,18 @@ The same card exists for the upstream remote:
 git remote add origin https://github.com/thdhyan/so101_mnri.git
 ```
 
+## The table poster
+
+`qr/remote_umn_poster.png` is the **A4 sheet (300 dpi)** for the one taped to
+the table next to the rig: a big QR, the URL in red, the `git remote add`
+line, and the SSH-key caveat spelled out under it. Print it as it is —
+`qr/remote_umn_poster.pdf` is the same page as a PDF, for a print shop.
+
+![A4 poster for the organization remote](qr/remote_umn_poster.png)
+
+The QR there is 24 px per module, so it scans from across the table; the
+small card above is the same code at 8 px, for the README and for chat.
+
 ## Pushing without an SSH key
 
 Reading over HTTPS needs nothing. Pushing needs a credential, and there are
@@ -113,10 +125,12 @@ add it as above — that is the whole point of this page.
 The PNGs in `docs/qr/` are generated, not hand-drawn:
 
 ```bash
-.venv/bin/python scripts/make_remote_qr.py             # -> docs/qr/*.png
+.venv/bin/python scripts/make_remote_qr.py              # cards -> docs/qr/*.png
+.venv/bin/python scripts/make_remote_qr.py --poster     # cards + A4 posters (and PDFs)
+.venv/bin/python scripts/make_remote_qr.py --poster --remotes umn
 .venv/bin/python scripts/make_remote_qr.py --out-dir /tmp
 ```
 
 Needs `qrcode` and `pillow` (`pip install 'qrcode[pil]'`). Edit the `REMOTES`
 table at the top of the script if a URL changes, then re-run it and commit the
-new PNGs.
+new files.

@@ -26,7 +26,8 @@ git remote add umn https://github.com/umn-cse-mnri/so101_mnri.git
 ```
 
 Pushing still needs a credential — a PAT over HTTPS, or `gh auth setup-git`.
-Full guide: **[docs/REMOTE_SETUP.md](docs/REMOTE_SETUP.md)**.
+Full guide: **[docs/REMOTE_SETUP.md](docs/REMOTE_SETUP.md)**, and an A4 sheet
+to print for the table is in **[docs/qr/](docs/qr/)**.
 
 ## Environments
 
