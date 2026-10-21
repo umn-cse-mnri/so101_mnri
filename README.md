@@ -7,6 +7,27 @@ dual-arm), plus teleop and data-collection tooling. Conda env: `so101`.
 conda activate so101
 ```
 
+## Remotes
+
+| remote | URL | what it is |
+|---|---|---|
+| `umn` | `https://github.com/umn-cse-mnri/so101_mnri.git` | **the organization fork** — branches and PRs live here |
+| `origin` | `https://github.com/thdhyan/so101_mnri.git` | the upstream repo the fork was made from |
+
+HTTPS on purpose: the `umn-cse-mnri` organization **enforces SAML SSO**, so an
+SSH key that works on the upstream repo is refused on the organization repo
+unless it has been authorized for the org. Over HTTPS a public repo needs no
+key at all. Scan the card (or copy the URL) and add the organization remote:
+
+![QR code for the organization remote](docs/qr/remote_umn.png)
+
+```bash
+git remote add umn https://github.com/umn-cse-mnri/so101_mnri.git
+```
+
+Pushing still needs a credential — a PAT over HTTPS, or `gh auth setup-git`.
+Full guide: **[docs/REMOTE_SETUP.md](docs/REMOTE_SETUP.md)**.
+
 ## Environments
 
 | | Single arm | Dual arm |
