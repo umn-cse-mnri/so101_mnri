@@ -16,8 +16,9 @@ and there is no undo except a backup directory. So this test is the tripwire:
 if someone runs the calibrator, CI goes red instead of the rig going quiet.
 
 The values below are the ones recorded on 2026-09-25 and checked against the
-live arms. The follower's `shoulder_lift` is the one that was recorded over
-the full 0..4095 raw span when the joint really travels 756..3097.
+live arms, except for the follower's `shoulder_lift` and `gripper`, which were
+deliberately updated for the repaired follower (commit 547416e, see
+docs/repaired-follower-calibration.md).
 """
 
 from __future__ import annotations
@@ -32,7 +33,8 @@ CALIB_DIR = REPO_ROOT / "robots" / "so101" / "calibration"
 
 JOINTS = ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll", "gripper"]
 
-# (range_min, range_max, homing_offset) per joint, as verified on 2026-09-25.
+# (range_min, range_max, homing_offset) per joint, as verified on 2026-09-25;
+# follower shoulder_lift and gripper updated for the repaired follower (2026-10-21).
 VERIFIED = {
     "leader": {
         "shoulder_pan": (822, 3529, 1469),
@@ -44,11 +46,11 @@ VERIFIED = {
     },
     "follower": {
         "shoulder_pan": (782, 3495, -1263),
-        "shoulder_lift": (756, 3097, -1983),
+        "shoulder_lift": (790, 3296, 1088),
         "elbow_flex": (817, 3095, 1613),
         "wrist_flex": (833, 3213, -2032),
         "wrist_roll": (0, 4095, 1623),
-        "gripper": (2005, 3541, 860),
+        "gripper": (1031, 2496, 860),
     },
 }
 
