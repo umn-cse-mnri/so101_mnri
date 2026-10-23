@@ -37,12 +37,12 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: install Python dependencies
+      - name: install Python deps
         run: |
           pip install -r requirements-dev.txt
           pip install opencv-python-headless
 
-      - name: install Mesa + OpenGL packages for MuJoCo on Ubuntu 22.04
+      - name: install Mesa + GL stack
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
@@ -56,11 +56,13 @@ jobs:
             libgl1-mesa-dev \
             mesa-utils
 
-      - name: configure headless MuJoCo backend
+      - name: set software-rendering env
         run: |
+          echo "LIBGL_ALWAYS_SOFTWARE=1" >> "$GITHUB_ENV"
+          echo "MESA_LOADER_DRIVER_OVERRIDE=llvmpipe" >> "$GITHUB_ENV"
           echo "MUJOCO_GL=osmesa" >> "$GITHUB_ENV"
 
-      - name: verify MuJoCo can create a headless context
+      - name: verify MuJoCo headless context
         run: |
           xvfb-run -a env MUJOCO_GL=$MUJOCO_GL python -c "import mujoco; model = mujoco.MjModel.from_xml_string('<mujoco/>'); ctx = mujoco.MjrContext(model, 1000); ctx.free()"
 
@@ -77,12 +79,12 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: install Python dependencies
+      - name: install Python deps
         run: |
           pip install -r requirements-dev.txt
           pip install opencv-python-headless
 
-      - name: install Mesa + OpenGL packages for MuJoCo on Ubuntu 22.04
+      - name: install Mesa + GL stack
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
@@ -96,8 +98,10 @@ jobs:
             libgl1-mesa-dev \
             mesa-utils
 
-      - name: configure headless MuJoCo backend
+      - name: set software-rendering env
         run: |
+          echo "LIBGL_ALWAYS_SOFTWARE=1" >> "$GITHUB_ENV"
+          echo "MESA_LOADER_DRIVER_OVERRIDE=llvmpipe" >> "$GITHUB_ENV"
           echo "MUJOCO_GL=osmesa" >> "$GITHUB_ENV"
 
       - name: build the env, render the cameras, take a few steps
