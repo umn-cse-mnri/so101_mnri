@@ -42,7 +42,7 @@ jobs:
           pip install -r requirements-dev.txt
           pip install opencv-python-headless
 
-      - name: install headless Mesa/OpenGL stack for Ubuntu 24.04
+      - name: install Ubuntu 24.04 Mesa + GL stack for headless CI
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
@@ -50,6 +50,7 @@ jobs:
             libgl1 \
             libgl1-mesa-dri \
             libgl1-mesa-dev \
+            libglx-mesa0 \
             libegl1 \
             libegl-mesa0 \
             libgles2 \
@@ -59,7 +60,7 @@ jobs:
             libglapi-mesa \
             mesa-utils
 
-      - name: configure software rendering for headless CI
+      - name: force software renderer for headless GitHub Actions
         run: |
           echo "LIBGL_ALWAYS_SOFTWARE=1" >> "$GITHUB_ENV"
           echo "MESA_LOADER_DRIVER_OVERRIDE=llvmpipe" >> "$GITHUB_ENV"
@@ -87,7 +88,7 @@ jobs:
           pip install -r requirements-dev.txt
           pip install opencv-python-headless
 
-      - name: install headless Mesa/OpenGL stack for Ubuntu 24.04
+      - name: install Ubuntu 24.04 Mesa + GL stack for headless CI
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
@@ -95,6 +96,7 @@ jobs:
             libgl1 \
             libgl1-mesa-dri \
             libgl1-mesa-dev \
+            libglx-mesa0 \
             libegl1 \
             libegl-mesa0 \
             libgles2 \
@@ -104,7 +106,7 @@ jobs:
             libglapi-mesa \
             mesa-utils
 
-      - name: configure software rendering for headless CI
+      - name: force software renderer for headless GitHub Actions
         run: |
           echo "LIBGL_ALWAYS_SOFTWARE=1" >> "$GITHUB_ENV"
           echo "MESA_LOADER_DRIVER_OVERRIDE=llvmpipe" >> "$GITHUB_ENV"
