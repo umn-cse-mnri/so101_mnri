@@ -36,9 +36,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install -r requirements-dev.txt
 
-      - name: install headless Mesa/OpenGL stack
+      - name: install Python dependencies
+        run: |
+          pip install -r requirements-dev.txt
+          pip install opencv-python-headless
+
+      - name: install headless Mesa/OpenGL stack for Ubuntu 24.04
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
@@ -63,11 +67,11 @@ jobs:
 
       - name: verify MuJoCo can create a headless context
         run: |
-          xvfb-run -a python -c "import mujoco; model = mujoco.MjModel.from_xml_string('<mujoco/>'); ctx = mujoco.MjrContext(model, 1000); ctx.free()"
+          xvfb-run -a env MUJOCO_GL=$MUJOCO_GL python -c "import mujoco; model = mujoco.MjModel.from_xml_string('<mujoco/>'); ctx = mujoco.MjrContext(model, 1000); ctx.free()"
 
       - name: pytest
         run: |
-          xvfb-run -a pytest tests/ -v
+          xvfb-run -a env MUJOCO_GL=$MUJOCO_GL pytest tests/ -v
 
   sim-smoke:
     name: mujoco env smoke
@@ -77,9 +81,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install -r requirements-dev.txt
 
-      - name: install headless Mesa/OpenGL stack
+      - name: install Python dependencies
+        run: |
+          pip install -r requirements-dev.txt
+          pip install opencv-python-headless
+
+      - name: install headless Mesa/OpenGL stack for Ubuntu 24.04
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
@@ -104,8 +112,8 @@ jobs:
 
       - name: build the env, render the cameras, take a few steps
         run: |
-          xvfb-run -a python scripts/verify_manual.py --env single --headless-check
+          xvfb-run -a env MUJOCO_GL=$MUJOCO_GL python scripts/verify_manual.py --env single --headless-check
 
       - name: and the dual-arm rig
         run: |
-          xvfb-run -a python scripts/verify_manual.py --env dual --headless-check
+          xvfb-run -a env MUJOCO_GL=$MUJOCO_GL python scripts/verify_manual.py --env dual --headless-check
