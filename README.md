@@ -81,6 +81,9 @@ roles live in `scripts/so101_env.sh`.
 
 ### Do not recalibrate the arms
 
+The saved follower table was updated for the repaired cube-to-cup follower on
+USB serial `5AAF263600`; see [changed values and leader pairing](docs/repaired-follower-calibration.md).
+
 > **Do not recalibrate the arms — the current calibration is verified, and
 > recalibrating one arm silently breaks the recording path.**
 >
