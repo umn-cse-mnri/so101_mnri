@@ -1,3 +1,15 @@
+![DO NOT RECALIBRATE THE ARMS](images/do_not_recalibrate.png)
+
+> [!CAUTION]
+> **DO NOT RECALIBRATE THE ARMS.** The calibration in
+> `robots/so101/calibration/` is **verified for this rig**. Recalibrating
+> moves a zero point, so the leader and the follower stop agreeing in
+> degrees, the pose gate fails, and six servos lunge against gravity on the
+> first frame — which presents as a flaky cable, not as a bug.
+>
+> See [Do not recalibrate the arms](#do-not-recalibrate-the-arms) for the
+> full story and for the safe way to correct a joint range by hand.
+
 # SO-101 MNRI
 
 MuJoCo simulation environments for the SO-101 robot arm (single-arm and
