@@ -38,35 +38,36 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements-dev.txt
 
-      - name: install headless GL stack for Ubuntu 24.04
+      - name: install headless Mesa/OpenGL stack
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
+            xvfb \
             libgl1 \
             libgl1-mesa-dri \
-            libglx-mesa0 \
+            libgl1-mesa-dev \
             libegl1 \
             libegl-mesa0 \
             libgles2 \
             libosmesa6 \
             libosmesa6-dev \
-            xvfb
+            libgbm1 \
+            libglapi-mesa \
+            mesa-utils
 
-      - name: pick a working OpenGL backend
+      - name: configure software rendering for headless CI
         run: |
-          for backend in egl osmesa; do
-            if xvfb-run -a env MUJOCO_GL=$backend python -c "import mujoco; model = mujoco.MjModel.from_xml_string('<mujoco/>'); ctx = mujoco.MjrContext(model, 1000); ctx.free()"; then
-              echo "MUJOCO_GL=$backend" >> "$GITHUB_ENV"
-              echo "using $backend"
-              exit 0
-            fi
-          done
-          echo "::error::no working OpenGL backend (tried egl and osmesa)"
-          exit 1
+          echo "LIBGL_ALWAYS_SOFTWARE=1" >> "$GITHUB_ENV"
+          echo "MESA_LOADER_DRIVER_OVERRIDE=llvmpipe" >> "$GITHUB_ENV"
+          echo "MUJOCO_GL=osmesa" >> "$GITHUB_ENV"
+
+      - name: verify MuJoCo can create a headless context
+        run: |
+          xvfb-run -a python -c "import mujoco; model = mujoco.MjModel.from_xml_string('<mujoco/>'); ctx = mujoco.MjrContext(model, 1000); ctx.free()"
 
       - name: pytest
         run: |
-          xvfb-run -a env MUJOCO_GL=$MUJOCO_GL pytest tests/ -v
+          xvfb-run -a pytest tests/ -v
 
   sim-smoke:
     name: mujoco env smoke
@@ -78,36 +79,33 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements-dev.txt
 
-      - name: install headless GL stack for Ubuntu 24.04
+      - name: install headless Mesa/OpenGL stack
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
+            xvfb \
             libgl1 \
             libgl1-mesa-dri \
-            libglx-mesa0 \
+            libgl1-mesa-dev \
             libegl1 \
             libegl-mesa0 \
             libgles2 \
             libosmesa6 \
             libosmesa6-dev \
-            xvfb
+            libgbm1 \
+            libglapi-mesa \
+            mesa-utils
 
-      - name: pick a working OpenGL backend
+      - name: configure software rendering for headless CI
         run: |
-          for backend in egl osmesa; do
-            if xvfb-run -a env MUJOCO_GL=$backend python -c "import mujoco; model = mujoco.MjModel.from_xml_string('<mujoco/>'); ctx = mujoco.MjrContext(model, 1000); ctx.free()"; then
-              echo "MUJOCO_GL=$backend" >> "$GITHUB_ENV"
-              echo "using $backend"
-              exit 0
-            fi
-          done
-          echo "::error::no working OpenGL backend (tried egl and osmesa)"
-          exit 1
+          echo "LIBGL_ALWAYS_SOFTWARE=1" >> "$GITHUB_ENV"
+          echo "MESA_LOADER_DRIVER_OVERRIDE=llvmpipe" >> "$GITHUB_ENV"
+          echo "MUJOCO_GL=osmesa" >> "$GITHUB_ENV"
 
       - name: build the env, render the cameras, take a few steps
         run: |
-          xvfb-run -a env MUJOCO_GL=$MUJOCO_GL python scripts/verify_manual.py --env single --headless-check
+          xvfb-run -a python scripts/verify_manual.py --env single --headless-check
 
       - name: and the dual-arm rig
         run: |
-          xvfb-run -a env MUJOCO_GL=$MUJOCO_GL python scripts/verify_manual.py --env dual --headless-check
+          xvfb-run -a python scripts/verify_manual.py --env dual --headless-check
