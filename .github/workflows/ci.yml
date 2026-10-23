@@ -38,17 +38,17 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements-dev.txt
 
-      - name: install full Mesa + EGL stack
+      - name: install Ubuntu 24.04 Mesa/EGL stack
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
             libosmesa6 \
             libosmesa6-dev \
             libegl1 \
-            libegl1-mesa \
-            libgles2-mesa \
+            libegl-mesa0 \
+            libgles2 \
             libgl1-mesa-dri \
-            libgl1-mesa-glx \
+            libglx-mesa0 \
             xvfb
 
       - name: pick a working OpenGL backend
@@ -77,17 +77,17 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements-dev.txt
 
-      - name: install full Mesa + EGL stack
+      - name: install Ubuntu 24.04 Mesa/EGL stack
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
             libosmesa6 \
             libosmesa6-dev \
             libegl1 \
-            libegl1-mesa \
-            libgles2-mesa \
+            libegl-mesa0 \
+            libgles2 \
             libgl1-mesa-dri \
-            libgl1-mesa-glx \
+            libglx-mesa0 \
             xvfb
 
       - name: pick a working OpenGL backend
