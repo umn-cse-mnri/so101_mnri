@@ -48,7 +48,7 @@ jobs:
       - name: verify MuJoCo headless GL backend
         run: |
           export MUJOCO_GL=egl
-          xvfb-run -a python -c "import mujoco; ctx = mujoco.MjrContext(mujoco.MjModel.from_xml_string('<mujoco/>')); ctx.free()"
+          xvfb-run -a python -c "import mujoco; model = mujoco.MjModel.from_xml_string('<mujoco/>'); ctx = mujoco.MjrContext(model, 1000); ctx.free()"
       - name: pytest
         run: |
           export MUJOCO_GL=egl
@@ -74,7 +74,7 @@ jobs:
       - name: verify MuJoCo headless GL backend
         run: |
           export MUJOCO_GL=egl
-          xvfb-run -a python -c "import mujoco; ctx = mujoco.MjrContext(mujoco.MjModel.from_xml_string('<mujoco/>')); ctx.free()"
+          xvfb-run -a python -c "import mujoco; model = mujoco.MjModel.from_xml_string('<mujoco/>'); ctx = mujoco.MjrContext(model, 1000); ctx.free()"
       - name: build the env, render the cameras, take a few steps
         run: |
           export MUJOCO_GL=egl
