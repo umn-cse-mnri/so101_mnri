@@ -16,7 +16,7 @@ permissions:
 jobs:
   lint:
     name: lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -30,38 +30,41 @@ jobs:
 
   unit:
     name: unit tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install -r requirements-dev.txt
 
-      - name: install Ubuntu 24.04 Mesa/EGL stack
+      - name: install Python deps
+        run: |
+          pip install -r requirements-dev.txt
+          pip install opencv-python-headless
+
+      - name: install Mesa + GL stack
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
+            xvfb \
             libosmesa6 \
             libosmesa6-dev \
-            libegl1 \
-            libegl-mesa0 \
-            libgles2 \
+            libgl1-mesa-glx \
             libgl1-mesa-dri \
-            libglx-mesa0 \
-            xvfb
+            libegl1-mesa \
+            libgles2-mesa \
+            libgl1-mesa-dev \
+            mesa-utils
 
-      - name: pick a working OpenGL backend
+      - name: set software-rendering env
         run: |
-          for backend in egl osmesa; do
-            if xvfb-run -a env MUJOCO_GL=$backend python -c "import mujoco; model = mujoco.MjModel.from_xml_string('<mujoco/>'); ctx = mujoco.MjrContext(model, 1000); ctx.free()"; then
-              echo "MUJOCO_GL=$backend" >> "$GITHUB_ENV"
-              echo "using $backend"
-              exit 0
-            fi
-          done
-          echo "::error::no working OpenGL backend (tried egl and osmesa)"
-          exit 1
+          echo "LIBGL_ALWAYS_SOFTWARE=1" >> "$GITHUB_ENV"
+          echo "MESA_LOADER_DRIVER_OVERRIDE=llvmpipe" >> "$GITHUB_ENV"
+          echo "MUJOCO_GL=osmesa" >> "$GITHUB_ENV"
+
+      - name: verify MuJoCo headless context
+        run: |
+          xvfb-run -a env MUJOCO_GL=$MUJOCO_GL python -c "import mujoco; model = mujoco.MjModel.from_xml_string('<mujoco/>'); ctx = mujoco.MjrContext(model, 1000); ctx.free()"
 
       - name: pytest
         run: |
@@ -69,38 +72,37 @@ jobs:
 
   sim-smoke:
     name: mujoco env smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install -r requirements-dev.txt
 
-      - name: install Ubuntu 24.04 Mesa/EGL stack
+      - name: install Python deps
+        run: |
+          pip install -r requirements-dev.txt
+          pip install opencv-python-headless
+
+      - name: install Mesa + GL stack
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
+            xvfb \
             libosmesa6 \
             libosmesa6-dev \
-            libegl1 \
-            libegl-mesa0 \
-            libgles2 \
+            libgl1-mesa-glx \
             libgl1-mesa-dri \
-            libglx-mesa0 \
-            xvfb
+            libegl1-mesa \
+            libgles2-mesa \
+            libgl1-mesa-dev \
+            mesa-utils
 
-      - name: pick a working OpenGL backend
+      - name: set software-rendering env
         run: |
-          for backend in egl osmesa; do
-            if xvfb-run -a env MUJOCO_GL=$backend python -c "import mujoco; model = mujoco.MjModel.from_xml_string('<mujoco/>'); ctx = mujoco.MjrContext(model, 1000); ctx.free()"; then
-              echo "MUJOCO_GL=$backend" >> "$GITHUB_ENV"
-              echo "using $backend"
-              exit 0
-            fi
-          done
-          echo "::error::no working OpenGL backend (tried egl and osmesa)"
-          exit 1
+          echo "LIBGL_ALWAYS_SOFTWARE=1" >> "$GITHUB_ENV"
+          echo "MESA_LOADER_DRIVER_OVERRIDE=llvmpipe" >> "$GITHUB_ENV"
+          echo "MUJOCO_GL=osmesa" >> "$GITHUB_ENV"
 
       - name: build the env, render the cameras, take a few steps
         run: |
