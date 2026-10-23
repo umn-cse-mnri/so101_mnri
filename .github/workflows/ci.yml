@@ -42,8 +42,8 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
             libosmesa6 libosmesa6-dev \
-            libegl1 libegl1-mesa libegl1-mesa-dev \
-            libgl1 libgl1-mesa-dri libgl1-mesa-glx \
+            libegl1 \
+            libgl1-mesa-dri \
             xvfb
       - name: verify MuJoCo headless GL backend
         run: |
@@ -68,8 +68,8 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
             libosmesa6 libosmesa6-dev \
-            libegl1 libegl1-mesa libegl1-mesa-dev \
-            libgl1 libgl1-mesa-dri libgl1-mesa-glx \
+            libegl1 \
+            libgl1-mesa-dri \
             xvfb
       - name: verify MuJoCo headless GL backend
         run: |
