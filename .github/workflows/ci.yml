@@ -16,7 +16,7 @@ permissions:
 jobs:
   lint:
     name: lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -30,7 +30,7 @@ jobs:
 
   unit:
     name: unit tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -42,28 +42,22 @@ jobs:
           pip install -r requirements-dev.txt
           pip install opencv-python-headless
 
-      - name: install Ubuntu 24.04 Mesa + GL stack for headless CI
+      - name: install Mesa + OpenGL packages for MuJoCo on Ubuntu 22.04
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
             xvfb \
-            libgl1 \
-            libgl1-mesa-dri \
-            libgl1-mesa-dev \
-            libglx-mesa0 \
-            libegl1 \
-            libegl-mesa0 \
-            libgles2 \
             libosmesa6 \
             libosmesa6-dev \
-            libgbm1 \
-            libglapi-mesa \
+            libgl1-mesa-glx \
+            libgl1-mesa-dri \
+            libegl1-mesa \
+            libgles2-mesa \
+            libgl1-mesa-dev \
             mesa-utils
 
-      - name: force software renderer for headless GitHub Actions
+      - name: configure headless MuJoCo backend
         run: |
-          echo "LIBGL_ALWAYS_SOFTWARE=1" >> "$GITHUB_ENV"
-          echo "MESA_LOADER_DRIVER_OVERRIDE=llvmpipe" >> "$GITHUB_ENV"
           echo "MUJOCO_GL=osmesa" >> "$GITHUB_ENV"
 
       - name: verify MuJoCo can create a headless context
@@ -76,7 +70,7 @@ jobs:
 
   sim-smoke:
     name: mujoco env smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -88,28 +82,22 @@ jobs:
           pip install -r requirements-dev.txt
           pip install opencv-python-headless
 
-      - name: install Ubuntu 24.04 Mesa + GL stack for headless CI
+      - name: install Mesa + OpenGL packages for MuJoCo on Ubuntu 22.04
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
             xvfb \
-            libgl1 \
-            libgl1-mesa-dri \
-            libgl1-mesa-dev \
-            libglx-mesa0 \
-            libegl1 \
-            libegl-mesa0 \
-            libgles2 \
             libosmesa6 \
             libosmesa6-dev \
-            libgbm1 \
-            libglapi-mesa \
+            libgl1-mesa-glx \
+            libgl1-mesa-dri \
+            libegl1-mesa \
+            libgles2-mesa \
+            libgl1-mesa-dev \
             mesa-utils
 
-      - name: force software renderer for headless GitHub Actions
+      - name: configure headless MuJoCo backend
         run: |
-          echo "LIBGL_ALWAYS_SOFTWARE=1" >> "$GITHUB_ENV"
-          echo "MESA_LOADER_DRIVER_OVERRIDE=llvmpipe" >> "$GITHUB_ENV"
           echo "MUJOCO_GL=osmesa" >> "$GITHUB_ENV"
 
       - name: build the env, render the cameras, take a few steps
