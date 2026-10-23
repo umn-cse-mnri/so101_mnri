@@ -40,7 +40,7 @@ jobs:
       - name: mesa for a headless GL context
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq libosmesa6-dev libegl1-mesa libgl1-mesa-dri
+          sudo apt-get install -y -qq libosmesa6-dev libegl1 libgl1-mesa-dri
       - name: pick a working OpenGL backend
         run: |
           for backend in egl osmesa; do
@@ -67,7 +67,7 @@ jobs:
       - name: mesa for a headless GL context
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq libosmesa6-dev libegl1-mesa libgl1-mesa-dri
+          sudo apt-get install -y -qq libosmesa6-dev libegl1 libgl1-mesa-dri
       - name: pick a working OpenGL backend
         run: |
           for backend in egl osmesa; do
